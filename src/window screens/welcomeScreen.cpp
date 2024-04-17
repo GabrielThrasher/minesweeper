@@ -91,11 +91,12 @@ void welcomeScreen::reloadWindow() {
 }
 
 void welcomeScreen::getUsernameFormat() {
-    userInput[0] = std::toupper(userInput[0]);
-    for (int i = 1; i < userInput.size(); i++){
-        userInput[i] = std::tolower(userInput[i]);
+    if (!userInput.empty()){
+        userInput[0] = std::toupper(userInput[0]);
+        for (int i = 1; i < userInput.size(); i++){
+            userInput[i] = std::tolower(userInput[i]);
+        }
     }
-
 }
 
 void welcomeScreen::doAlphaCharKeySteps(unsigned char alphaChar) {

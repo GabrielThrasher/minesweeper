@@ -1,1 +1,0 @@
-CMakeLists.txt not found in C:\Users\gthra\OneDrive\Documents\Coding Projects\C++ Projects\Minesweeper\minesweeper Select CMakeLists.txt

@@ -20,6 +20,7 @@ public:
     void displayUserInput();
     void displayHelperMessages(std::string userInputStr);
     void reloadWindow();
+    void getUsernameFormat();
     void doAlphaCharKeySteps(unsigned char alphaChar);
     void doEnterKeySteps();
     void doBackSpaceKeySteps();

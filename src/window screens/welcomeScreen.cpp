@@ -16,8 +16,8 @@ void welcomeScreen::displayWelcomeMenuText(){
                                           windowWidthCenter, windowHeightCenter - 75,
                                           "white", "bold");
     sf::Text authorText = getText(windowFont, "By: Gabriel Thrasher", 18,
-                                          windowWidthCenter, windowHeight - 20,
-                                          "white", "none");
+                                  windowWidthCenter, windowHeight - 20,
+                                  "white", "none");
     window.draw(menuTitleText);
     window.draw(promptUsernameText);
     window.draw(authorText);
@@ -47,17 +47,17 @@ void welcomeScreen::displayUserInput() {
     // Get the to-be-displayed text and adjust individual parts to always keep it centered as a whole
     sf::Text cursorText = getText(windowFont, cursorStr,
                                   18, windowWidthCenter + charSpacing *
-                                  (cursorIndex - (int)userInputStrSecondHalf.length()),
+                                                          (cursorIndex - (int)userInputStrSecondHalf.length()),
                                   windowHeightCenter - 45,"yellow", "bold");
     sf::Text userInputTextFirstHalf = getText(windowFont, userInputStrFirstHalf,
                                               18, cursorText.getGlobalBounds().left - charSpacing *
-                                              userInputStrFirstHalf.length(), windowHeightCenter - 45,
+                                                                                      userInputStrFirstHalf.length(), windowHeightCenter - 45,
                                               "yellow", "bold");
     sf::Text userInputTextSecondHalf = getText(windowFont, userInputStrSecondHalf,
-                                                18, cursorText.getGlobalBounds().left +
-                                                cursorText.getGlobalBounds().width + charSpacing *
-                                                userInputStrSecondHalf.length(),windowHeightCenter - 45,
-                                                "yellow", "bold");
+                                               18, cursorText.getGlobalBounds().left +
+                                                   cursorText.getGlobalBounds().width + charSpacing *
+                                                                                        userInputStrSecondHalf.length(),windowHeightCenter - 45,
+                                               "yellow", "bold");
 
     window.draw(userInputTextFirstHalf);
     window.draw(cursorText);
@@ -90,18 +90,19 @@ void welcomeScreen::reloadWindow() {
     window.display();
 }
 
+void welcomeScreen::getUsernameFormat() {
+    userInput[0] = std::toupper(userInput[0]);
+    for (int i = 1; i < userInput.size(); i++){
+        userInput[i] = std::tolower(userInput[i]);
+    }
+
+}
+
 void welcomeScreen::doAlphaCharKeySteps(unsigned char alphaChar) {
     if (userInput.empty() || userInput.size() < 10){
-        unsigned char updatedAlphaChar;
+        userInput.insert(userInput.begin() + cursorIndex,alphaChar);
+        getUsernameFormat();
 
-        if (userInput.empty()){
-            updatedAlphaChar = (unsigned char) std::toupper(alphaChar);
-        }
-        else{
-            updatedAlphaChar = (unsigned char) std::tolower(alphaChar);
-        }
-
-        userInput.insert(userInput.begin() + cursorIndex,updatedAlphaChar);
         cursorIndex++;
         enterKeyPressedPrematurely = false;
         wrongKeyPressed = false;
@@ -124,6 +125,7 @@ void welcomeScreen::doEnterKeySteps() {
 void welcomeScreen::doBackSpaceKeySteps() {
     if (!userInput.empty() && userInput.size() <= 10 && cursorIndex != 0) {
         userInput.erase(userInput.begin() + cursorIndex - 1);
+        getUsernameFormat();
         cursorIndex--;
     }
 }
@@ -131,6 +133,7 @@ void welcomeScreen::doBackSpaceKeySteps() {
 void welcomeScreen::doDeleteKeySteps() {
     if (!userInput.empty() && userInput.size() <= 10 && cursorIndex != userInput.size()) {
         userInput.erase(userInput.begin() + cursorIndex);
+        getUsernameFormat();
     }
 }
 
@@ -162,7 +165,7 @@ void welcomeScreen::run() {
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
-            // Key was pressed
+                // Key was pressed
             else if (event.type == sf::Event::KeyPressed) {
                 // Alpha key was pressed
                 if (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z)
@@ -170,7 +173,7 @@ void welcomeScreen::run() {
                     // Get the alpha character from the key code
                     doAlphaCharKeySteps(static_cast<unsigned char>(event.key.code - sf::Keyboard::A + 'a'));
                 }
-                // A non-alpha key was pressed
+                    // A non-alpha key was pressed
                 else if (event.key.code == sf::Keyboard::Enter){
                     doEnterKeySteps();
                 }

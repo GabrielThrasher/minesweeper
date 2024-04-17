@@ -1,7 +1,7 @@
 #ifndef MINESWEEPER_BASESCREEN_H
 #define MINESWEEPER_BASESCREEN_H
-#include "gameData.h"
-#include "text.h"
+#include "../game fundamentals/gameData.h"
+#include "../game fundamentals/text.h"
 
 class baseScreen{
 protected:

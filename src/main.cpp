@@ -1,4 +1,4 @@
-#include "welcomeScreen.h"
+#include "window screens/welcomeScreen.h"
 
 int main() {
     // Load in game data (board & leaderboard info, fonts, textures, and sprites) from files

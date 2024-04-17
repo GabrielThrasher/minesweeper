@@ -1,6 +1,6 @@
 #ifndef MINESWEEPER_GAMESCREEN_H
 #define MINESWEEPER_GAMESCREEN_H
-#include "board.h"
+#include "../game fundamentals/board.h"
 #include "leaderboardScreen.h"
 #include <chrono>
 

@@ -27,7 +27,6 @@ gameScreen::gameScreen(gameData* gameDataPtr) : baseScreen(gameDataPtr, 32 * gam
     hasDebugMessage = false;
 
     gameStartTime = std::chrono::high_resolution_clock::now();
-    totalGameTime = 0;
     totalTimePaused = 0;
 }
 
@@ -145,15 +144,15 @@ void gameScreen::calculateGameRunTime() {
 }
 
 void gameScreen::changeTimerDisplay(std::string minutesPlayedStr, std::string secondsPlayedStr) {
-        std::string prefix = "digit_";
-        UIDisplays["timer1st"] = gameDataPtr->getSpriteFormat(prefix + minutesPlayedStr[0],
-                                                              32 * colNum - 97,32 * rowNum + 32);
-        UIDisplays["timer2nd"] = gameDataPtr->getSpriteFormat(prefix + minutesPlayedStr[1],
-                                                              32 * colNum - 76,32 * rowNum + 32);
-        UIDisplays["timer3rd"] = gameDataPtr->getSpriteFormat(prefix + secondsPlayedStr[0],
-                                                              32 * colNum - 54,32 * rowNum + 32);
-        UIDisplays["timer4th"] = gameDataPtr->getSpriteFormat(prefix + secondsPlayedStr[1],
-                                                              32 * colNum - 33,32 * rowNum + 32);
+    std::string prefix = "digit_";
+    UIDisplays["timer1st"] = gameDataPtr->getSpriteFormat(prefix + minutesPlayedStr[0],
+                                                          32 * colNum - 97,32 * rowNum + 32);
+    UIDisplays["timer2nd"] = gameDataPtr->getSpriteFormat(prefix + minutesPlayedStr[1],
+                                                          32 * colNum - 76,32 * rowNum + 32);
+    UIDisplays["timer3rd"] = gameDataPtr->getSpriteFormat(prefix + secondsPlayedStr[0],
+                                                          32 * colNum - 54,32 * rowNum + 32);
+    UIDisplays["timer4th"] = gameDataPtr->getSpriteFormat(prefix + secondsPlayedStr[1],
+                                                          32 * colNum - 33,32 * rowNum + 32);
 }
 
 void gameScreen::runTimer() {
@@ -195,15 +194,15 @@ void gameScreen::doClickedOnUIButtonSteps(int xCoor, int yCoor) {
     if (facePos.contains(xCoor, yCoor)){
         doFaceButtonSteps();
     }
-    // Debug button was clicked on
+        // Debug button was clicked on
     else if (debugPos.contains(xCoor, yCoor)){
         doDebugButtonSteps();
     }
-    // Control button was clicked on
+        // Control button was clicked on
     else if (controlPos.contains(xCoor, yCoor)){
         doControlButtonSteps();
     }
-    // Leaderboard button was clicked on
+        // Leaderboard button was clicked on
     else if (leaderboardPos.contains(xCoor, yCoor)) {
         doLeaderboardButtonSteps();
     }
@@ -220,9 +219,9 @@ void gameScreen::doFaceButtonSteps() {
 void gameScreen::doDebugButtonSteps() {
     if (!minesPlaced){
         noMinesDebugMessage = getText(windowFont,
-                                "No mines generated\nyet! Left-click a\ntile first.",
-                                    fontSize,70 + 6.3f * colNum, 32 * rowNum + 48,
-                                    "black", "bold");
+                                      "No mines generated\nyet! Left-click a\ntile first.",
+                                      fontSize,70 + 6.3f * colNum, 32 * rowNum + 48,
+                                      "black", "bold");
         hasDebugMessage = true;
     }
     else if (!(gameWon || gameLost) && !(controlPausedGame || leaderboardPausedGame)){
@@ -264,27 +263,26 @@ void gameScreen::doLeaderboardButtonSteps() {
         unpauseGame();
     }
     leaderboardPausedGame = false;
+    if (gameLost) reloadWindow();
 }
 
 void gameScreen::runRightClickedTileSteps(tile& tile, std::vector<int> posVec) {
     tile.setHasFlag(!tile.getHasFlag());
     gameBoard.incrementCounter(tile.getHasFlag());
     (*gameBoard.getBoardMatrix())[posVec[0]][posVec[1]] = tile;
-    if (gameBoard.checkIfAllFlagsPlacedProperly() && minesPlaced && gameBoard.getCounter() == 0){
-        runWonGameSteps();
-    }
 }
 
 void gameScreen::runLeftClickedTileSteps(tile& tile, std::vector<int> posVec) {
+    int row = posVec[0], col = posVec[1];
     if (!minesPlaced){
-        gameBoard.setUpBoardWithMines(posVec[0], posVec[1]);
-        tile = (*gameBoard.getBoardMatrix())[posVec[0]][posVec[1]];
+        gameBoard.setUpBoardWithMines(row, col);
+        tile = (*gameBoard.getBoardMatrix())[row][col];
         minesPlaced = true;
         hasDebugMessage = false;
     }
 
     bool clickedOnMine = gameBoard.revealGivenTile(&tile);
-    (*gameBoard.getBoardMatrix())[posVec[0]][posVec[1]] = tile;
+    (*gameBoard.getBoardMatrix())[row][col] = tile;
     if(clickedOnMine){
         runLostGameSteps();
     }
@@ -295,18 +293,18 @@ void gameScreen::runLeftClickedTileSteps(tile& tile, std::vector<int> posVec) {
 
 void gameScreen::runLostGameSteps() {
     UIButtons["face"] = gameDataPtr->getSpriteFormat("face_lose",
-                                                      16 * colNum - 32,32 * rowNum + 16);
+                                                     16 * colNum - 32,32 * rowNum + 16);
     gameBoard.revealAllMines(true, true);
     gameLost = true;
     gameEndMessage = getText(windowFont,
-                          "You clicked on a\nmine and lost!",
-                          fontSize,70 + 6.3f * colNum, 32 * rowNum + 48,"black", "bold");
+                             "You clicked on a\nmine and lost!",
+                             fontSize,70 + 6.3f * colNum, 32 * rowNum + 48,"black", "bold");
     reloadWindow();
 }
 
 void gameScreen::runWonGameSteps() {
     UIButtons["face"] = gameDataPtr->getSpriteFormat("face_win",
-                                                      16 * colNum - 32,32 * rowNum + 16);
+                                                     16 * colNum - 32,32 * rowNum + 16);
     gameBoard.revealAllMines(false, false);
     gameBoard.placeAllFlags();
     gameWon = true;
@@ -351,7 +349,7 @@ void gameScreen::run() {
                         }
                     }
                 }
-                // A button was potentially clicked; if so, do its steps
+                    // A button was potentially clicked; if so, do its steps
                 else{
                     doClickedOnUIButtonSteps(mousePos.x, mousePos.y);
                 }

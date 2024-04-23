@@ -33,11 +33,11 @@ private:
 
     // Sprite & texture data
     std::string textureFiles[20] = {"debug.png","face_happy.png", "face_lose.png", "face_win.png",
-                                "flag.png", "leaderboard.png", "mine.png", "number_1.png",
-                                "number_2.png", "number_3.png", "number_4.png", "number_5.png",
-                                "number_6.png", "number_7.png", "number_8.png", "pause.png",
-                                "play.png", "tile_hidden.png", "tile_revealed.png", "digits.png"
-                                };
+                                    "flag.png", "leaderboard.png", "mine.png", "number_1.png",
+                                    "number_2.png", "number_3.png", "number_4.png", "number_5.png",
+                                    "number_6.png", "number_7.png", "number_8.png", "pause.png",
+                                    "play.png", "tile_hidden.png", "tile_revealed.png", "digits.png"
+    };
     std::map<std::string, sf::Texture> textures;
     std::map<std::string, sf::Sprite> sprites;
 

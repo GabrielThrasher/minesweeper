@@ -1,7 +1,7 @@
 #include "leaderboardScreen.h"
 
 leaderboardScreen::leaderboardScreen(gameData* gameDataPtr, bool updateLeaderboard) : baseScreen(gameDataPtr,
-                        16 * gameDataPtr->getColNum(),16 * gameDataPtr->getRowNum() + 50) {
+                                                                                                 16 * gameDataPtr->getColNum(),16 * gameDataPtr->getRowNum() + 50) {
     reloadWindow(updateLeaderboard);
 }
 

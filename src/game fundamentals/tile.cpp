@@ -1,10 +1,12 @@
 #include "tile.h"
 
-tile::tile(sf::RenderWindow* windowPtr, gameData* gameDataPtr, float xPos, float yPos) {
+tile::tile(sf::RenderWindow* windowPtr, gameData* gameDataPtr, int row, int col) {
     this->windowPtr = windowPtr;
     this->gameDataPtr = gameDataPtr;
-    this->xPos = xPos;
-    this->yPos = yPos;
+    this->row = row;
+    this->col = col;
+    xPos = col * 32; // 32 as that's the width of the tile sprite
+    yPos = row * 32; // 32 as that's the height of the tile sprite
 
     baseSprite = gameDataPtr->getSprites()->at("tile_hidden");
     gamePauseBaseSprite = gameDataPtr->getSprites()->at("tile_revealed");
@@ -94,11 +96,19 @@ bool tile::getHasNumber() {
     return hasNumber;
 }
 
-float tile::getXPos() {
+int tile::getRow() {
+    return row;
+}
+
+int tile::getCol() {
+    return col;
+}
+
+int tile::getXPos() {
     return xPos;
 }
 
-float tile::getYPos() {
+int tile::getYPos() {
     return yPos;
 }
 

@@ -1,5 +1,5 @@
 1 Name: Gabriel Thrasher;
-2 Section: 21712, MALA 3210 M Periods 5-6, Alex Johnson;
+2 Section: 21712, MALA 3210 M Periods 5-6 (Alex Johnson);
 3 UFL email: g.thrasher@ufl.edu;
 4 System: Windows 10 (64-bit);
 5 Compiler: g++ -std=c++11;

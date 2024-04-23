@@ -15,8 +15,10 @@ private:
     sf::Sprite mineSprite;
     sf::Sprite emptySprite;
     sf::Sprite gamePauseBaseSprite;
-    float xPos;
-    float yPos;
+    int row;
+    int col;
+    int xPos;
+    int yPos;
     bool hasMine;
     bool hasFlag;
     bool isHidden;
@@ -25,7 +27,7 @@ private:
     int numberAdjacentMines;
 
 public:
-    tile(sf::RenderWindow* windowPtr, gameData* gameDataPtr, float xPos, float yPos);
+    tile(sf::RenderWindow* windowPtr, gameData* gameDataPtr, int row, int col);
     void displayTile();
     void displayTileWhileGamePaused();
     void calcNumberAdjacentMines();
@@ -40,8 +42,10 @@ public:
     bool getHasMine();
     bool getHasFlag();
     bool getHasNumber();
-    float getXPos();
-    float getYPos();
+    int getRow();
+    int getCol();
+    int getXPos();
+    int getYPos();
     bool getIsHidden();
     int getNumAdjacentMines();
 

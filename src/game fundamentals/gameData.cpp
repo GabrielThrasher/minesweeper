@@ -75,7 +75,7 @@ void gameData::loadSprites() {
             }
         }
 
-        // Standard sprite creation
+            // Standard sprite creation
         else{
             sprite.setTexture(iter->second);
             sprites[iter->first] = sprite;

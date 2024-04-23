@@ -1,7 +1,6 @@
 #ifndef MINESWEEPER_BOARD_H
 #define MINESWEEPER_BOARD_H
 #include "tile.h"
-//#include <cstdlib>
 
 class board{
 private:
@@ -16,10 +15,11 @@ public:
     board();
     void loadData(sf::RenderWindow* windowPtr, gameData* gameDataPtr);
     void createBoard();
-    void setUpBoardWithMines(int xPos, int yPos);
-    void addMinesToBoard(int xPos, int yPos);
+    void setUpBoardWithMines(int row, int col);
+    void addMinesToBoard(int row, int col);
     bool checkIfInVector(std::vector<std::string> vec, std::string value);
-    void getAdjacentMines(tile& gameTile, int& xPos, int& yPos);
+    void getAdjacentMines(tile& gameTile);
+    bool checkIfValidPosition(int newRow, int newCol);
 
     // Mid-game functions
     void displayBoard();
@@ -28,7 +28,6 @@ public:
     bool revealGivenTile(tile* tile);
     void revealNearbyTiles(tile* tile);
     void revealAllMines(bool status, bool gameLost);
-    bool checkIfAllFlagsPlacedProperly();
     bool checkIfAllSafeTilesRevealed();
     void placeAllFlags();
 

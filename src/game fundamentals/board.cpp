@@ -1,17 +1,7 @@
 #include "board.h"
 
 board::board() {
-    // Do nothing. This is just here so the gameScreen file can create an empty board at the start
-}
-
-void board::setUpBoardWithMines(int xPos, int yPos) {
-    addMinesToBoard(xPos, yPos);
-    for (int i = 0; i < gameDataPtr->getRowNum(); i ++){
-        for (int j = 0; j < gameDataPtr->getColNum(); j++){
-            getAdjacentMines(boardMatrix[i][j], i, j);
-            boardMatrix[i][j].calcNumberAdjacentMines();
-        }
-    }
+    // Do nothing. This is just here so a gameScreen object can create an empty board at the start
 }
 
 // Use to load in all the data from after a board has already been created
@@ -26,18 +16,28 @@ void board::createBoard() {
     for (int i = 0; i < gameDataPtr->getRowNum(); i++){
         std::vector<tile> row;
         for (int j = 0; j < gameDataPtr->getColNum(); j++){
-            tile gameTile(windowPtr, gameDataPtr, 32 * j, 32 * i);
+            tile gameTile(windowPtr, gameDataPtr, i, j);
             row.push_back(gameTile);
         }
         boardMatrix.push_back(row);
     }
 }
 
-void board::addMinesToBoard(int xPos, int yPos) {
+void board::setUpBoardWithMines(int row, int col) {
+    addMinesToBoard(row, col);
+    for (int i = 0; i < gameDataPtr->getRowNum(); i++){
+        for (int j = 0; j < gameDataPtr->getColNum(); j++){
+            getAdjacentMines(boardMatrix[i][j]);
+            boardMatrix[i][j].calcNumberAdjacentMines();
+        }
+    }
+}
+
+void board::addMinesToBoard(int row, int col) {
     int randomRow, randomCol;
     std::string randomPair;
     std::vector<std::string> completedRandomPairs;
-    completedRandomPairs.push_back("(" + std::to_string(xPos) + ", " + std::to_string(yPos) + ")");
+    completedRandomPairs.push_back("(" + std::to_string(row) + ", " + std::to_string(col) + ")");
     bool addedMine;
 
     for (int i = 0 ; i < gameDataPtr->getMineNum(); i++){
@@ -65,70 +65,33 @@ bool board::checkIfInVector(std::vector<std::string> vec, std::string value) {
     return false;
 }
 
-void board::getAdjacentMines(tile& gameTile, int& xPos, int& yPos) {
-    // Top row, left corner
-    if (xPos != 0 && yPos != 0){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos-1][yPos-1]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
+void board::getAdjacentMines(tile& gameTile) {
+    int directions[8][2] = {
+            {-1, -1}, // Up one row, left one col
+            {-1, 0}, // Up one row, same col
+            {-1, 1}, // Up one row, right one col
+            {0, -1}, // Same row, left one col
+            {0, 1}, // Same row, right one col
+            {1, -1}, // Down one row, left one col
+            {1, 0}, // Down one row, same col
+            {1, 1}, // Down one row, right one col
+    };
 
-    // Top row, middle
-    if (yPos != 0) {
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos][yPos - 1]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
+    for (auto direction : directions){
+        int newRow = gameTile.getRow() + direction[0];
+        int newCol = gameTile.getCol() + direction[1];
 
-    // Top row, right corner
-    if (xPos != gameDataPtr->getRowNum() - 1 && yPos != 0){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos+1][yPos-1]);
+        if (checkIfValidPosition(newRow, newCol)){
+            gameTile.getAdjacentTiles().push_back(&boardMatrix[newRow][newCol]);
+        }
+        else{
+            gameTile.getAdjacentTiles().push_back(nullptr);
+        }
     }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
+}
 
-    // Middle row, left side
-    if (xPos != 0){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos-1][yPos]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
-
-    // Middle row, right side
-    if (xPos != gameDataPtr->getRowNum() - 1) {
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos + 1][yPos]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
-
-    // Bottom row, left corner
-    if (xPos != 0 && yPos != gameDataPtr->getColNum() - 1){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos - 1][yPos + 1]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
-
-    // Bottom row, middle
-    if (yPos != gameDataPtr->getColNum() - 1){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos][yPos + 1]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
-
-    // Bottom row, right corner
-    if (xPos != gameDataPtr->getRowNum() - 1 && yPos != gameDataPtr->getColNum() - 1){
-        gameTile.getAdjacentTiles().push_back(&boardMatrix[xPos + 1][yPos + 1]);
-    }
-    else {
-        gameTile.getAdjacentTiles().push_back(nullptr);
-    }
+bool board::checkIfValidPosition(int newRow, int newCol) {
+    return !(newRow >= gameDataPtr->getRowNum() || newRow < 0 || newCol >= gameDataPtr->getColNum() || newCol < 0);
 }
 
 void board::displayBoard() {
@@ -157,7 +120,7 @@ void board::incrementCounter(bool state) {
 }
 
 bool board::revealGivenTile(tile* tile) {
-    if (tile->getHasMine()) {
+    if (tile->getHasMine() && !tile->getHasFlag()) {
         return true;
     }
     revealNearbyTiles(tile);
@@ -169,7 +132,7 @@ void board::revealNearbyTiles(tile* tile) {
     if (tile->getHasMine() || !tile->getIsHidden() || tile->getHasFlag()){
         return;
     }
-    // Base case: tile "has" a number (meaning it is adjacent to a mine)
+        // Base case: tile "has" a number (meaning it is adjacent to a mine)
     else if (tile->getHasNumber()){
         if (tile->getHasFlag()){
             tile->setHasFlag(false);
@@ -178,7 +141,7 @@ void board::revealNearbyTiles(tile* tile) {
         tile->revealTile();
         return;
     }
-    // Recursive case: tile is not a mine, has not yet been revealed, and does not have a flag or number
+        // Recursive case: tile is not a mine, has not yet been revealed, and does not have a flag or number
     else{
         // Reveal tile
         if (tile->getHasFlag()){
@@ -209,19 +172,6 @@ void board::revealAllMines(bool status, bool gameLost) {
             }
         }
     }
-}
-
-bool board::checkIfAllFlagsPlacedProperly() {
-    for (int i = 0; i < gameDataPtr->getRowNum(); i++){
-        for (int j = 0; j < gameDataPtr->getColNum(); j++){
-            if (boardMatrix[i][j].getHasMine()){
-                if (!boardMatrix[i][j].getHasFlag()){
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
 }
 
 bool board::checkIfAllSafeTilesRevealed() {
